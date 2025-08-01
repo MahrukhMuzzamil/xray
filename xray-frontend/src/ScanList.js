@@ -19,7 +19,7 @@ function ScanList() {
   });
 
   useEffect(() => {
-    axios.get('http://localhost:8000/api/scans/').then((res) => {
+    axios.get('https://xray-backend-391z.onrender.com/api/scans/').then((res) => {
       const data = Array.isArray(res.data) ? res.data : res.data.results || [];
       setScans(data);
 
@@ -36,7 +36,7 @@ function ScanList() {
   }, []);
 
   useEffect(() => {
-    let url = 'http://localhost:8000/api/scans/';
+    let url = 'https://xray-backend-391z.onrender.com/api/scans/';
     const query = [];
     if (search) query.push(`search=${search}`);
     if (filters.body_part) query.push(`body_part=${filters.body_part.value}`);
@@ -130,7 +130,7 @@ function ScanList() {
                 src={
                   scan.image.startsWith('http')
                     ? scan.image
-                    : `http://localhost:8000${scan.image}`
+                    : `https://xray-backend-391z.onrender.com${scan.image}`
                 }
                 alt="X-ray"
                 width="150"

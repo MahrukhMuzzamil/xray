@@ -7,7 +7,7 @@ function ScanDetail() {
   const [scan, setScan] = useState(null);
 
   useEffect(() => {
-    axios.get(`http://localhost:8000/api/scans/${id}/`).then((res) => {
+    axios.get(`http://https://xray-backend-391z.onrender.com/api/scans/${id}/`).then((res) => {
       setScan(res.data);
     });
   }, [id]);
@@ -18,7 +18,7 @@ function ScanDetail() {
     <div className="container fade-up">
      <h1 className="page-title">Scan Detail</h1> 
       <img
-        src={scan.image.startsWith('http') ? scan.image : `http://localhost:8000${scan.image}`}
+        src={scan.image.startsWith('http') ? scan.image : `http://https://xray-backend-391z.onrender.com${scan.image}`}
         alt="Full X-ray"
         style={{ maxWidth: '100%', height: 'auto', marginBottom: '20px' }}
       />
