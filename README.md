@@ -81,4 +81,18 @@ A simple full-stack project for uploading, browsing, and filtering X-ray scans u
    The frontend will be running at:
    `http://localhost:3000`
 
+**This project supports Elasticsearch for advanced full-text search (across description, diagnosis, tags).**
+
+Setup Instructions
+Install Elasticsearch on your system (7.x or 8.x):
+
+https://www.elastic.co/downloads/elasticsearch
+
+Start Elasticsearch:
+
+bash
+Copy
+Edit
+# On Windows
+bin\elasticsearch.bat
 
