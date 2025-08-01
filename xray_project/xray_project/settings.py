@@ -101,3 +101,23 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOW_ALL_ORIGINS = True
+import os
+
+ALLOWED_HOSTS = ['*']  # Or your actual domain once known
+
+# Static files config
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Media files config
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# CORS setup (required for React on another domain)
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # for local React dev
+    "https://your-frontend.netlify.app"  # replace with actual Netlify URL after deploy
+]
+
+# Allow requests from Netlify
+CORS_ALLOW_ALL_ORIGINS = True
