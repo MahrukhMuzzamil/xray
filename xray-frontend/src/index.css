@@ -1,0 +1,236 @@
+/* === GLOBAL STYLES === */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Helvetica Neue', sans-serif;
+  background-color: #ffffff; /* white background */
+  color: #000000; /* black text for readability */
+}
+
+h1, h2, h3, label {
+  color: #00bcd4; /* neon teal */
+}
+
+a {
+  color: #00bcd4;
+  text-decoration: none;
+}
+a:hover {
+  text-shadow: 0 0 10px #00bcd4;
+}
+
+input, select, textarea {
+  background-color: #f2f2f2;
+  color: #000;
+  border: 1px solid #00bcd4;
+  border-radius: 5px;
+  padding: 8px;
+  margin-top: 4px;
+}
+
+button {
+  background: linear-gradient(135deg, #00bcd4, #00f7ff);
+  color: #000;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 0 8px #00bcd4;
+  transition: transform 0.2s ease;
+}
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 16px #00bcd4;
+}
+
+.card {
+  background-color: #fafafa;
+  border: 1px solid #00bcd4;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #00f7ff;
+  transition: transform 0.3s ease;
+  padding: 15px;
+  color: #000;
+}
+.card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 20px #00f7ff;
+}
+
+img {
+  border-radius: 6px;
+  box-shadow: 0 0 10px rgba(0, 188, 212, 0.4);
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  box-shadow: 0 0 6px #00bcd4;
+}
+
+.tag {
+  display: inline-block;
+  background-color: #00e6ff;
+  color: #000;
+  padding: 4px 10px;
+  border-radius: 12px;
+  margin: 2px;
+  font-size: 0.85em;
+  box-shadow: 0 0 6px #00e6ff;
+}
+
+.container {
+  padding: 20px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.filter-box {
+  background-color: #ffffff;
+  border: 1px solid #00bcd4;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 10px #00bcd4;
+}
+
+/* Neon-style input glow */
+input[type="text"],
+input[type="date"],
+input[type="file"] {
+  padding: 10px;
+  background-color: #f9f9f9;
+  color: #000;
+  border: 1px solid #00bcd4;
+  border-radius: 4px;
+  width: 100%;
+  transition: all 0.2s ease-in-out;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0);
+}
+
+/* Glow Button */
+.glow-button {
+  background: #00f7ff;
+  color: #000;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  box-shadow: 0 0 12px #00f7ff;
+  transition: transform 0.2s ease;
+  cursor: pointer;
+}
+.glow-button:hover {
+  transform: scale(1.05);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-up {
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+/* === NEON SELECT (react-select) === */
+.neon-select__control {
+  background-color: #ffffff;
+  border: 1px solid #00bcd4;
+  box-shadow: none;
+  color: #000;
+  min-height: 40px;
+}
+
+.neon-select__control--is-focused {
+  border-color: #00bcd4;
+  box-shadow: 0 0 5px #00bcd4;
+}
+
+.neon-select__menu {
+  background-color: #f0f0f0;
+  color: #000;
+  border: 1px solid #00bcd4;
+  box-shadow: 0 0 10px #00f7ff;
+  z-index: 9999;
+}
+
+.neon-select__option {
+  background-color: #f0f0f0;
+  color: #000;
+  cursor: pointer;
+  padding: 10px;
+  font-size: 14px;
+}
+
+.neon-select__option--is-focused {
+  background-color: #00e6ff;
+  color: #000;
+}
+
+.neon-select__option--is-selected {
+  background-color: #00f7ff;
+  color: #000;
+}
+
+.neon-select__single-value {
+  color: #000;
+}
+
+.neon-select__input {
+  color: #000 !important;
+}
+
+.neon-select__placeholder {
+  color: #555;
+}
+.page-title {
+  color: #001f3f;
+  font-size: 38px;
+  margin-bottom: 20px;
+}
+
+.glow-banner {
+  max-height: 120px;
+  margin-bottom: 20px;
+  animation: flicker 1.5s infinite alternate;
+  filter: drop-shadow(0 0 20px #00ffe7);
+}
+
+@keyframes flicker {
+  0% { opacity: 0.85; transform: scale(1); }
+  100% { opacity: 1; transform: scale(1.02); }
+}
+.skeleton-right {
+  position: fixed;
+  bottom: 10px;
+  right: 7px;
+  z-index: -1;
+  pointer-events: none;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  backface-visibility: hidden;
+}
+
+.skeleton-figure {
+  max-height: 80vh;
+  filter: drop-shadow(0 0 25px #00ffe7);
+  animation: flicker 1.5s ease-in-out infinite alternate;
+}
+
+
+.page-title {
+  color: #003366;
+  font-size: 3rem;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+* {
+  box-shadow: none !important;
+  outline: none !important;
+}
