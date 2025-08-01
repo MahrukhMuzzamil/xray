@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -8,7 +9,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
-# ✅ Installed Apps (cleaned up)
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -16,17 +16,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-       'django_filters',  
+    'django_filters',
 
     # Third-party apps
     'rest_framework',
     'corsheaders',
+    'django_elasticsearch_dsl',
 
     # Your app
     'scans',
 ]
 
-# ✅ Middleware
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',  # should be at the top!
     'django.middleware.security.SecurityMiddleware',
@@ -57,14 +57,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'xray_project.wsgi.application'
 
-# ✅ Database (default SQLite)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-# ✅ Password Validators
+
+# ✅ Elasticsearch with credentials and SSL disabled for development
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': 'https://localhost:9200',
+        'http_auth': ('elastic', 'oRY-RP-5PAikVTqtjFlD'),
+        'verify_certs': False,
+    },
+}
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -80,20 +88,16 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-
 STATIC_URL = 'static/'
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 
 CORS_ALLOW_ALL_ORIGINS = True
