@@ -92,6 +92,22 @@ A full-stack application for medical professionals to search and manage medical 
    
    The frontend will be available at: http://localhost:3000
 
+## Elasticsearch Integration (Bonus Feature)
+
+This application includes optional Elasticsearch integration for enhanced full-text search capabilities across fields like description, diagnosis, and tags.
+
+### Setup Instructions
+
+1. Download and install Elasticsearch from [https://www.elastic.co/downloads/elasticsearch](https://www.elastic.co/downloads/elasticsearch)
+2. Start Elasticsearch service
+3. Index existing data: `python manage.py index_scans`
+
+With Elasticsearch enabled, the search functionality will provide:
+- Better relevance scoring
+- Fuzzy matching
+- Multi-field search
+- Improved performance for large datasets
+
 ## Usage
 
 1. Make sure both backend and frontend servers are running

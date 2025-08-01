@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from .models import XRayScan
 from .serializers import XRayScanSerializer
 from django_filters.rest_framework import DjangoFilterBackend
+from django.db.models import Q as DjangoQ
 
 class XRayScanViewSet(viewsets.ModelViewSet):
     queryset = XRayScan.objects.all().order_by('-scan_date')
@@ -18,50 +19,41 @@ class XRayScanViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         if not serializer.is_valid():
             print("❌ Upload failed with errors:")
-            print(serializer.errors)  # 🔍 DEBUG: Shows you what caused 400 error
+            print(serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return super().create(request, *args, **kwargs)
 
     def get_queryset(self):
-        search_query = self.request.query_params.get('search', None)
+        base_queryset = super().get_queryset()
+        search_query = self.request.query_params.get('search')
 
         if not search_query:
-            return super().get_queryset()
+            return base_queryset
 
         try:
             from .documents import XRayScanDocument
             from elasticsearch_dsl import Q
 
-            q = Q(
-                'multi_match',
-                query=search_query,
-                fields=['description', 'diagnosis', 'tags', 'body_part', 'institution', 'patient_id'],
-                type='best_fields'
-            )
+            q = Q('multi_match', query=search_query, fields=[
+                'description', 'diagnosis', 'tags', 'body_part', 'institution', 'patient_id'
+            ], fuzziness='auto')
 
             search = XRayScanDocument.search().query(q)
-            response = search.execute()
-            ids = [hit.meta.id for hit in response]
+            results = search.execute()
+            ids = [int(hit.meta.id) for hit in results if hit.meta.id.isdigit()]
 
             if ids:
-                preserved_order = 'CASE scans_xrayscan.id '
-                for i, id in enumerate(ids):
-                    preserved_order += f'WHEN {id} THEN {i} '
-                preserved_order += 'END'
-
-                queryset = XRayScan.objects.filter(id__in=ids).extra(
-                    select={'ordering': preserved_order},
-                    order_by=('ordering',)
-                )
-                return queryset
-
+                preserved_order = 'CASE ' + ' '.join(f'WHEN id={id} THEN {i}' for i, id in enumerate(ids)) + ' END'
+                return base_queryset.filter(id__in=ids).extra(select={'ordering': preserved_order}, order_by=('ordering',))
         except Exception as e:
             print(f"Elasticsearch search failed: {e}")
 
-        return super().get_queryset().filter(
-            description__icontains=search_query
-        ) | super().get_queryset().filter(
-            diagnosis__icontains=search_query
-        ) | super().get_queryset().filter(
-            tags__icontains=search_query
+        # fallback
+        return base_queryset.filter(
+            DjangoQ(description__icontains=search_query) |
+            DjangoQ(diagnosis__icontains=search_query) |
+            DjangoQ(tags__icontains=search_query) |
+            DjangoQ(body_part__icontains=search_query) |
+            DjangoQ(institution__icontains=search_query) |
+            DjangoQ(patient_id__icontains=search_query)
         )
