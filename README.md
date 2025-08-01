@@ -1,83 +1,84 @@
-X-ray Medical Image Search
-A simple full-stack project for uploading, browsing, and filtering X-ray scans.
+# X-ray Medical Image Search
 
-Requirements
-Python 3.8 or newer
+A simple full-stack project for uploading, browsing, and filtering X-ray scans using Django and React.
 
-Node.js 14+
+---
 
-npm 6+
+## Requirements
 
-Backend Setup (Django)
-Open terminal and go into the backend folder:
+* Python 3.8 or newer
+* Node.js 14 or newer
+* npm 6 or newer
 
-bash
-Copy
-Edit
-cd xray_project
-Create and activate a virtual environment:
+---
 
-On Windows:
+## Backend Setup (Django)
 
-nginx
-Copy
-Edit
-python -m venv venv
-venv\Scripts\activate
-On macOS/Linux:
+1. Open a terminal and navigate to the backend folder:
 
-bash
-Copy
-Edit
-python3 -m venv venv
-source venv/bin/activate
-Install Python packages:
+   ```
+   cd xray_project
+   ```
 
-nginx
-Copy
-Edit
-pip install -r requirements.txt
-Run database migrations:
+2. Create and activate a virtual environment:
 
-nginx
-Copy
-Edit
-python manage.py migrate
-(Optional) Add a sample.jpg inside a new media folder.
+   ```
+   python -m venv venv
+   venv\Scripts\activate
+   ```
 
-Seed the database:
+3. Install the required Python packages:
 
-scss
-Copy
-Edit
-python manage.py shell -c "from scans.seed import run; run()"
-Start the backend server:
+   ```
+   pip install -r requirements.txt
+   ```
 
-nginx
-Copy
-Edit
-python manage.py runserver
-Visit the backend at:
-http://127.0.0.1:8000
+4. Apply database migrations:
 
-Frontend Setup (React)
-Open a new terminal and go into the frontend folder:
+   ```
+   python manage.py migrate
+   ```
 
-bash
-Copy
-Edit
-cd xray-frontend
-Install dependencies:
+5. (Optional) Create a `media` folder inside `xray_project` and add a file named `sample.jpg`.
 
-nginx
-Copy
-Edit
-npm install
-Start the frontend server:
+6. Seed the database with sample data:
 
-sql
-Copy
-Edit
-npm start
-Visit the frontend at:
-http://localhost:3000
+   ```
+   python manage.py shell -c "from scans.seed import run; run()"
+   ```
+
+7. Start the backend server:
+
+   ```
+   python manage.py runserver
+   ```
+
+   The backend will be running at:
+   `http://127.0.0.1:8000`
+
+---
+
+## Frontend Setup (React)
+
+1. Open a new terminal and navigate to the frontend folder:
+
+   ```
+   cd xray-frontend
+   ```
+
+2. Install the required Node packages:
+
+   ```
+   npm install
+   ```
+
+3. Start the frontend development server:
+
+   ```
+   npm start
+   ```
+
+   The frontend will be running at:
+   `http://localhost:3000`
+
+
