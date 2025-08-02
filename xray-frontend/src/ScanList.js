@@ -37,7 +37,8 @@ function ScanList() {
   }, []);
 
   useEffect(() => {
-    let url = 'https://xray-backend-391z.onrender.com/api/scans/';
+   let url = `${process.env.REACT_APP_API_URL}/scans/`;
+
     const query = [];
     if (search) query.push(`search=${search}`);
     if (filters.body_part) query.push(`body_part=${filters.body_part.value}`);

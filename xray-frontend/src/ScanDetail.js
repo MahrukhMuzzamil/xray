@@ -7,21 +7,29 @@ function ScanDetail() {
   const [scan, setScan] = useState(null);
 
   useEffect(() => {
-    axios.get(`http://https://xray-backend-391z.onrender.com/api/scans/${id}/`).then((res) => {
-      setScan(res.data);
-    });
+    axios.get(`https://xray-backend-391z.onrender.com/api/scans/${id}/`)
+      .then((res) => {
+        setScan(res.data);
+      })
+      .catch((err) => {
+        console.error("❌ Failed to fetch scan detail:", err);
+      });
   }, [id]);
 
   if (!scan) return <div className="container">Loading...</div>;
 
   return (
     <div className="container fade-up">
-     <h1 className="page-title">Scan Detail</h1> 
-      <img
-        src={scan.image.startsWith('http') ? scan.image : `http://https://xray-backend-391z.onrender.com${scan.image}`}
-        alt="Full X-ray"
-        style={{ maxWidth: '100%', height: 'auto', marginBottom: '20px' }}
-      />
+      <h1 className="page-title">Scan Detail</h1>
+      
+      {scan.image && (
+        <img
+          src={scan.image}
+          alt="Full X-ray"
+          style={{ maxWidth: '100%', height: 'auto', marginBottom: '20px' }}
+        />
+      )}
+
       <div className="card">
         <p><strong>Patient ID:</strong> {scan.patient_id}</p>
         <p><strong>Body Part:</strong> {scan.body_part}</p>
