@@ -7,16 +7,14 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-placeholder")
-
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    'xray-backend-391z.onrender.com',  # Update this if your Render domain is different
+    'xray-backend-391z.onrender.com',  # Your Render domain
 ]
 
-# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -24,19 +22,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    # Third-party
     'rest_framework',
     'corsheaders',
     'django_filters',
-    'django_elasticsearch_dsl',
-
-    # Local app
+    'django_elasticsearch_dsl',  # You can comment this out temporarily if ES is failing
     'scans',
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',  # must be high in order
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -65,7 +59,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'xray_project.wsgi.application'
 
-# SQLite DB
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -73,16 +66,15 @@ DATABASES = {
     }
 }
 
-# Elasticsearch config
+# Optional: Disable if Elasticsearch isn't critical yet
 ELASTICSEARCH_DSL = {
     'default': {
-        'hosts': 'https://localhost:9200',
-        'http_auth': ('elastic', 'oRY-RP-5PAikVTqtjFlD'),
+        'hosts': os.getenv("ES_HOST", "https://localhost:9200"),
+        'http_auth': (os.getenv("ES_USER", "elastic"), os.getenv("ES_PASS", "your-password")),
         'verify_certs': False,
     },
 }
 
-# Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -90,13 +82,11 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# Internationalization
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Static and media
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
@@ -105,5 +95,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CORS config
 CORS_ALLOW_ALL_ORIGINS = True
