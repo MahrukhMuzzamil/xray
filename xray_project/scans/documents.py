@@ -5,7 +5,7 @@ from .models import XRayScan
 xray_index = Index('xray_scans')
 xray_index.settings(number_of_shards=1, number_of_replicas=0)
 
-@registry.register_document
+#@registry.register_document
 class XRayScanDocument(Document):
     description = fields.TextField()
     diagnosis = fields.TextField()
