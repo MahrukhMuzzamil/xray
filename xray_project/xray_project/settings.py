@@ -1,14 +1,22 @@
-from pathlib import Path
 import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-(b&2wf1y9fv)$0h55mqdieyzh=vlm1e(0n@_@)i3j=&y_b-2l)'
+SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-placeholder")
 
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'xray-backend-391z.onrender.com',  # Update this if your Render domain is different
+]
 
+# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -16,19 +24,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_filters',
 
-    # Third-party apps
+    # Third-party
     'rest_framework',
     'corsheaders',
+    'django_filters',
     'django_elasticsearch_dsl',
 
-    # Your app
+    # Local app
     'scans',
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',  # should be at the top!
+    'corsheaders.middleware.CorsMiddleware',  # must be high in order
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -57,6 +65,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'xray_project.wsgi.application'
 
+# SQLite DB
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -64,7 +73,7 @@ DATABASES = {
     }
 }
 
-# ✅ Elasticsearch with credentials and SSL disabled for development
+# Elasticsearch config
 ELASTICSEARCH_DSL = {
     'default': {
         'hosts': 'https://localhost:9200',
@@ -73,51 +82,28 @@ ELASTICSEARCH_DSL = {
     },
 }
 
+# Password validation
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
+# Internationalization
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = 'static/'
+# Static and media
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOW_ALL_ORIGINS = True
-import os
-
-ALLOWED_HOSTS = ['*']  # Or your actual domain once known
-
-# Static files config
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-# Media files config
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-# CORS setup (required for React on another domain)
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # for local React dev
-    "https://your-frontend.netlify.app"  # replace with actual Netlify URL after deploy
-]
-
-# Allow requests from Netlify
+# CORS config
 CORS_ALLOW_ALL_ORIGINS = True
