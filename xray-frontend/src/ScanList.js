@@ -146,9 +146,9 @@ function ScanList() {
 <img
   src={scan.image}
   alt="X-ray"
-  width="150"
-  style={{ objectFit: 'cover', height: '150px' }}
+  className="scan-image"
 />
+
 
 
 

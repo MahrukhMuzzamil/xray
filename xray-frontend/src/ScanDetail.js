@@ -31,8 +31,9 @@ function ScanDetail() {
 <img
   src={scan.image}
   alt="Full X-ray"
-  style={{ maxWidth: '100%', height: 'auto', marginBottom: '20px' }}
+  className="detail-image"
 />
+
 
 
       )}
