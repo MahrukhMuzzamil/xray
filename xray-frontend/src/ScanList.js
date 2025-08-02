@@ -144,14 +144,12 @@ function ScanList() {
 //   width="150"
 // />
 <img
-  src={
-    scan.image?.startsWith('http')
-      ? scan.image
-      : `${process.env.REACT_APP_API_URL}${scan.image}`
-  }
+  src={scan.image}
   alt="X-ray"
   width="150"
+  style={{ objectFit: 'cover', height: '150px' }}
 />
+
 
 
               }

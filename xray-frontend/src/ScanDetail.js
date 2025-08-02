@@ -29,14 +29,11 @@ function ScanDetail() {
 //   style={{ maxWidth: '100%', height: 'auto', marginBottom: '20px' }}
 // />
 <img
-  src={
-    scan.image?.startsWith('http')
-      ? scan.image
-      : `${process.env.REACT_APP_API_URL}${scan.image}`
-  }
+  src={scan.image}
   alt="Full X-ray"
   style={{ maxWidth: '100%', height: 'auto', marginBottom: '20px' }}
 />
+
 
       )}
 
