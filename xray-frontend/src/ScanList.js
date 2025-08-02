@@ -138,11 +138,21 @@ function ScanList() {
                 alt="X-ray"
                 width="150"
               /> */
-              <img
-  src={scan.image}
+//               <img
+//   src={scan.image}
+//   alt="X-ray"
+//   width="150"
+// />
+<img
+  src={
+    scan.image?.startsWith('http')
+      ? scan.image
+      : `${process.env.REACT_APP_API_URL}${scan.image}`
+  }
   alt="X-ray"
   width="150"
 />
+
 
               }
               <div style={{ marginTop: '10px' }}>

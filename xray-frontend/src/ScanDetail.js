@@ -23,8 +23,17 @@ function ScanDetail() {
       <h1 className="page-title">Scan Detail</h1>
       
       {scan.image && (
-        <img
-  src={scan.image}
+//         <img
+//   src={scan.image}
+//   alt="Full X-ray"
+//   style={{ maxWidth: '100%', height: 'auto', marginBottom: '20px' }}
+// />
+<img
+  src={
+    scan.image?.startsWith('http')
+      ? scan.image
+      : `${process.env.REACT_APP_API_URL}${scan.image}`
+  }
   alt="Full X-ray"
   style={{ maxWidth: '100%', height: 'auto', marginBottom: '20px' }}
 />
