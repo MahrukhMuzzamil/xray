@@ -3,6 +3,10 @@
 A simple full-stack project for uploading, browsing, and filtering X-ray scans using Django and React.
 
 ---
+# The Deployment Link
+https://xray-frontend-zbmg.onrender.com/
+Both the frontend and Backend are hosted on render and the images are managed on cloudinary
+backend link is: https://xray-backend-391z.onrender.com
 
 ## Requirements
 
