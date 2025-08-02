@@ -10,3 +10,5 @@ django-elasticsearch-dsl==8.2
 gunicorn
 python-dotenv
 python-dotenv>=1.0.0
+cloudinary
+django-cloudinary-storage

@@ -8,5 +8,5 @@ urlpatterns = [
     path('api/', include('scans.urls')),
 ]
 
-# 👇 Serve media always (development and Render)
+
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
