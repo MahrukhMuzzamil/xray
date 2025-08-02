@@ -24,10 +24,11 @@ function ScanDetail() {
       
       {scan.image && (
         <img
-          src={scan.image}
-          alt="Full X-ray"
-          style={{ maxWidth: '100%', height: 'auto', marginBottom: '20px' }}
-        />
+  src={scan.image}
+  alt="Full X-ray"
+  style={{ maxWidth: '100%', height: 'auto', marginBottom: '20px' }}
+/>
+
       )}
 
       <div className="card">

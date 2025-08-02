@@ -128,7 +128,7 @@ function ScanList() {
               className="card fade-up"
               style={{ width: '180px' }}
             >
-              <img
+              {/* <img
               src={
   scan.image.startsWith('http')
     ? scan.image
@@ -137,7 +137,14 @@ function ScanList() {
 
                 alt="X-ray"
                 width="150"
-              />
+              /> */
+              <img
+  src={scan.image}
+  alt="X-ray"
+  width="150"
+/>
+
+              }
               <div style={{ marginTop: '10px' }}>
                 <strong>{scan.body_part}</strong>
                 <p>{scan.diagnosis}</p>
