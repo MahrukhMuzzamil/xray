@@ -19,7 +19,8 @@ function ScanList() {
   });
 
   useEffect(() => {
-    axios.get('https://xray-backend-391z.onrender.com/api/scans/').then((res) => {
+    axios.get(`${process.env.REACT_APP_API_URL}/scans/`)
+.then((res) => {
       const data = Array.isArray(res.data) ? res.data : res.data.results || [];
       setScans(data);
 
@@ -127,11 +128,12 @@ function ScanList() {
               style={{ width: '180px' }}
             >
               <img
-                src={
-                  scan.image.startsWith('http')
-                    ? scan.image
-                    : `https://xray-backend-391z.onrender.com${scan.image}`
-                }
+              src={
+  scan.image.startsWith('http')
+    ? scan.image
+    : `${process.env.REACT_APP_API_URL}${scan.image}`
+}
+
                 alt="X-ray"
                 width="150"
               />

@@ -41,7 +41,8 @@ function UploadScan() {
     }
 
     try {
-      await axios.post('http://localhost:8000/api/scans/', data);
+      await axios.post(`${process.env.REACT_APP_API_URL}/scans/`, data);
+
       alert('Upload successful!');
       navigate('/');
     } catch (error) {
