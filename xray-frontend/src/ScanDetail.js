@@ -6,20 +6,31 @@ function ScanDetail() {
   const { id } = useParams();
   const [scan, setScan] = useState(null);
   const [imageError, setImageError] = useState(false);
+  const [imageLoading, setImageLoading] = useState(true);
 
   useEffect(() => {
     axios.get(`https://xray-backend-391z.onrender.com/api/scans/${id}/`)
       .then((res) => {
+        console.log('📊 Scan data received:', res.data);
         setScan(res.data);
+        setImageLoading(true);
+        setImageError(false);
       })
       .catch((err) => {
         console.error("❌ Failed to fetch scan detail:", err);
       });
   }, [id]);
 
-  const handleImageError = () => {
-    console.error("❌ Failed to load image:", scan?.image);
+  const handleImageLoad = () => {
+    console.log('✅ Image loaded successfully');
+    setImageLoading(false);
+    setImageError(false);
+  };
+
+  const handleImageError = (e) => {
+    console.error("❌ Failed to load image:", e.target.src);
     setImageError(true);
+    setImageLoading(false);
   };
 
   if (!scan) return <div className="container">Loading...</div>;
@@ -30,17 +41,28 @@ function ScanDetail() {
       
       {scan.image && !imageError && (
         <div className="image-container">
+          {imageLoading && (
+            <div style={{ 
+              textAlign: 'center', 
+              padding: '20px',
+              color: '#666'
+            }}>
+              Loading image...
+            </div>
+          )}
           <img
             src={scan.image}
             alt="Full X-ray"
             className="detail-image"
+            onLoad={handleImageLoad}
             onError={handleImageError}
             style={{
               maxWidth: '100%',
               height: 'auto',
               marginBottom: '20px',
               borderRadius: '8px',
-              boxShadow: '0 0 15px rgba(0, 188, 212, 0.6)'
+              boxShadow: '0 0 15px rgba(0, 188, 212, 0.6)',
+              display: imageLoading ? 'none' : 'block'
             }}
           />
         </div>
@@ -50,6 +72,16 @@ function ScanDetail() {
         <div className="image-error">
           <p>⚠️ Image could not be loaded</p>
           <p>Image URL: {scan.image}</p>
+          <p>Please check if the URL is accessible in your browser.</p>
+          <button 
+            onClick={() => {
+              setImageError(false);
+              setImageLoading(true);
+            }}
+            style={{ marginTop: '10px' }}
+          >
+            Try Again
+          </button>
         </div>
       )}
 

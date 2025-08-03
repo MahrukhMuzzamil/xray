@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import XRayScan
 import json
+import re
 
 class XRayScanSerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,15 +20,21 @@ class XRayScanSerializer(serializers.ModelSerializer):
         elif representation.get('tags') is None:
             representation['tags'] = []
         
-        # Ensure image URL is properly formatted
+        # Fix and ensure image URL is properly formatted
         if representation.get('image'):
-            # If it's a Cloudinary URL, ensure it's properly formatted
             image_url = str(representation['image'])
-            if not image_url.startswith('http'):
-                # If it's not a full URL, it might be a relative path
-                # This shouldn't happen with Cloudinary, but just in case
+            
+            # Fix malformed Cloudinary URLs
+            if 'image/upload/https://' in image_url:
+                image_url = image_url.replace('image/upload/https://', 'https://')
+            elif 'image/upload/http://' in image_url:
+                image_url = image_url.replace('image/upload/http://', 'http://')
+            
+            # Ensure it's a valid URL
+            if image_url.startswith('http'):
                 representation['image'] = image_url
             else:
+                # If it's not a full URL, try to construct one
                 representation['image'] = image_url
         
         return representation

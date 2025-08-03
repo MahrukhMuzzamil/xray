@@ -22,6 +22,7 @@ function ScanList() {
     axios.get(`${process.env.REACT_APP_API_URL}/scans/`)
 .then((res) => {
       const data = Array.isArray(res.data) ? res.data : res.data.results || [];
+      console.log('📊 Scans data received:', data);
       setScans(data);
 
       const bodyParts = [...new Set(data.map((s) => s.body_part))];
@@ -61,7 +62,13 @@ function ScanList() {
   const handleImageError = (e) => {
     console.error("❌ Failed to load image:", e.target.src);
     e.target.style.display = 'none';
-    e.target.nextSibling.style.display = 'block';
+    if (e.target.nextSibling) {
+      e.target.nextSibling.style.display = 'block';
+    }
+  };
+
+  const handleImageLoad = (e) => {
+    console.log('✅ Image loaded successfully:', e.target.src);
   };
 
   return (
@@ -141,6 +148,7 @@ function ScanList() {
                       src={scan.image}
                       alt="X-ray"
                       className="scan-image"
+                      onLoad={handleImageLoad}
                       onError={handleImageError}
                       style={{
                         width: '150px',
