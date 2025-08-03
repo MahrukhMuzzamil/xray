@@ -24,27 +24,17 @@ class XRayScanSerializer(serializers.ModelSerializer):
         if representation.get('image'):
             image_url = str(representation['image'])
             
-            # If it's a relative path, construct the full Cloudinary URL
-            if image_url.startswith('image/upload/'):
-                # This is a relative Cloudinary path, need to construct full URL
-                cloud_name = self.context.get('request').build_absolute_uri('/').split('/')[2] if self.context.get('request') else 'drgsmg6aq'
-                # Use a default cloud name if we can't get it from request
-                if not cloud_name or cloud_name.startswith('http'):
-                    cloud_name = 'drgsmg6aq'  # Replace with your actual cloud name
-                image_url = f"https://res.cloudinary.com/{cloud_name}/{image_url}"
-                representation['image'] = image_url
-            elif 'image/upload/https://' in image_url:
-                # Fix malformed URLs
+            # Fix malformed Cloudinary URLs
+            if 'image/upload/https://' in image_url:
                 image_url = image_url.replace('image/upload/https://', 'https://')
-                representation['image'] = image_url
             elif 'image/upload/http://' in image_url:
-                # Fix malformed URLs
                 image_url = image_url.replace('image/upload/http://', 'http://')
-                representation['image'] = image_url
-            elif not image_url.startswith('http'):
-                # If it's not a full URL, try to construct one
+            
+            # Ensure it's a valid URL
+            if image_url.startswith('http'):
                 representation['image'] = image_url
             else:
+                # If it's not a full URL, try to construct one
                 representation['image'] = image_url
         
         return representation
