@@ -5,6 +5,7 @@ from .serializers import XRayScanSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Q as DjangoQ, Case, When
 import logging
+import traceback
 
 logger = logging.getLogger(__name__)
 
@@ -20,30 +21,43 @@ class XRayScanViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         try:
-            logger.info(f"📤 Upload request received: {request.data}")
+            logger.info(f"📤 Upload request received")
+            logger.info(f"   Files: {list(request.FILES.keys()) if request.FILES else 'No files'}")
+            logger.info(f"   Data keys: {list(request.data.keys()) if request.data else 'No data'}")
             
             # Check if image file is present
             if 'image' not in request.FILES:
+                logger.error("❌ No image file in request")
                 return Response(
                     {'image': ['Image file is required.']}, 
                     status=status.HTTP_400_BAD_REQUEST
                 )
             
+            # Log file details
+            image_file = request.FILES['image']
+            logger.info(f"   Image file: {image_file.name}, size: {image_file.size}, type: {image_file.content_type}")
+            
+            # Create serializer with request data
             serializer = self.get_serializer(data=request.data)
+            
             if not serializer.is_valid():
                 logger.error(f"❌ Upload validation failed: {serializer.errors}")
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             
+            logger.info("✅ Validation passed, saving instance...")
+            
             # Save the instance
             instance = serializer.save()
             logger.info(f"✅ Upload successful for scan ID: {instance.id}")
+            logger.info(f"   Image URL: {instance.image}")
             
             return Response(serializer.data, status=status.HTTP_201_CREATED)
             
         except Exception as e:
             logger.error(f"❌ Upload failed with exception: {str(e)}")
+            logger.error(f"❌ Traceback: {traceback.format_exc()}")
             return Response(
-                {'error': 'Upload failed. Please try again.'}, 
+                {'error': f'Upload failed: {str(e)}'}, 
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 

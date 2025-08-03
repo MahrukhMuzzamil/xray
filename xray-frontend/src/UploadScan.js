@@ -85,10 +85,14 @@ function UploadScan() {
 
     try {
       console.log('🚀 Uploading to:', `${process.env.REACT_APP_API_URL}/scans/`);
+      console.log('📁 Form data keys:', Array.from(data.keys()));
+      console.log('📁 Image file:', formData.image);
+      
       const response = await axios.post(`${process.env.REACT_APP_API_URL}/scans/`, data, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
+        timeout: 30000, // 30 second timeout
       });
 
       console.log('✅ Upload successful:', response.data);
@@ -98,6 +102,7 @@ function UploadScan() {
       console.error('❌ Upload failed:', error);
       console.error('❌ Response data:', error.response?.data);
       console.error('❌ Response status:', error.response?.status);
+      console.error('❌ Response headers:', error.response?.headers);
       
       let errorMessage = 'Upload failed. Please check the fields and try again.';
       
@@ -110,6 +115,8 @@ function UploadScan() {
         } else {
           errorMessage = error.response.data;
         }
+      } else if (error.message) {
+        errorMessage = `Upload failed: ${error.message}`;
       }
       
       setError(errorMessage);
@@ -129,7 +136,8 @@ function UploadScan() {
             padding: '10px', 
             borderRadius: '4px', 
             marginBottom: '15px',
-            border: '1px solid #ef5350'
+            border: '1px solid #ef5350',
+            whiteSpace: 'pre-line'
           }}>
             {error}
           </div>
@@ -236,7 +244,7 @@ function UploadScan() {
           />
           {formData.image && (
             <p style={{ fontSize: '12px', color: '#666', marginTop: '5px' }}>
-              Selected: {formData.image.name}
+              Selected: {formData.image.name} ({(formData.image.size / 1024 / 1024).toFixed(2)} MB)
             </p>
           )}
         </div>
@@ -249,4 +257,4 @@ function UploadScan() {
   );
 }
 
-export default UploadScan
+export default UploadScan;

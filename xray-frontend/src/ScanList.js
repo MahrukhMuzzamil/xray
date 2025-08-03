@@ -63,12 +63,16 @@ function ScanList() {
     console.error("❌ Failed to load image:", e.target.src);
     e.target.style.display = 'none';
     if (e.target.nextSibling) {
-      e.target.nextSibling.style.display = 'block';
+      e.target.nextSibling.style.display = 'flex';
     }
   };
 
   const handleImageLoad = (e) => {
     console.log('✅ Image loaded successfully:', e.target.src);
+    // Hide the placeholder when image loads successfully
+    if (e.target.nextSibling) {
+      e.target.nextSibling.style.display = 'none';
+    }
   };
 
   return (
@@ -155,13 +159,16 @@ function ScanList() {
                         height: '150px',
                         objectFit: 'cover',
                         borderRadius: '6px',
-                        boxShadow: '0 0 10px rgba(0, 188, 212, 0.4)'
+                        boxShadow: '0 0 10px rgba(0, 188, 212, 0.4)',
+                        display: 'block'
                       }}
                     />
                     <div 
                       className="image-placeholder" 
                       style={{
-                        display: 'none',
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
                         width: '150px',
                         height: '150px',
                         backgroundColor: '#f0f0f0',
@@ -171,10 +178,11 @@ function ScanList() {
                         justifyContent: 'center',
                         color: '#666',
                         fontSize: '12px',
-                        textAlign: 'center'
+                        textAlign: 'center',
+                        zIndex: 1
                       }}
                     >
-                      No Image
+                      Loading...
                     </div>
                   </>
                 ) : (
