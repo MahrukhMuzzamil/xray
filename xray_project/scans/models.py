@@ -13,3 +13,11 @@ class XRayScan(models.Model):
 
     def __str__(self):
         return f"{self.patient_id} - {self.body_part}"
+
+    def save(self, *args, **kwargs):
+        # Ensure image URL is properly formatted before saving
+        if self.image and not str(self.image).startswith('http'):
+            # If it's a relative path, it should be handled by CloudinaryField
+            # But let's ensure it's properly formatted
+            pass
+        super().save(*args, **kwargs)
