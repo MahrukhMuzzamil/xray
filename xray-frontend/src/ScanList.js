@@ -3,6 +3,7 @@ import axios from 'axios';
 import Select from 'react-select';
 import { Link } from 'react-router-dom';
 import skeletonImage from './assets/skeleton.png'; // ✅ Make sure this is inside /src/assets
+import { config } from './config';
 
 function ScanList() {
   const [scans, setScans] = useState([]);
@@ -19,7 +20,7 @@ function ScanList() {
   });
 
   useEffect(() => {
-    axios.get(`${process.env.REACT_APP_API_URL}/scans/`)
+    axios.get(`${config.API_URL}/scans/`)
 .then((res) => {
       const data = Array.isArray(res.data) ? res.data : res.data.results || [];
       setScans(data);
@@ -33,11 +34,14 @@ function ScanList() {
         diagnoses: diagnoses.map((d) => ({ value: d, label: d })),
         institutions: institutions.map((i) => ({ value: i, label: i })),
       });
+    })
+    .catch((error) => {
+      console.error('Failed to fetch scans:', error);
     });
   }, []);
 
   useEffect(() => {
-   let url = `${process.env.REACT_APP_API_URL}/scans/`;
+   let url = `${config.API_URL}/scans/`;
 
     const query = [];
     if (search) query.push(`search=${search}`);
@@ -49,6 +53,9 @@ function ScanList() {
     axios.get(url).then((res) => {
       const data = Array.isArray(res.data) ? res.data : res.data.results || [];
       setScans(data);
+    })
+    .catch((error) => {
+      console.error('Failed to fetch filtered scans:', error);
     });
   }, [search, filters]);
 
@@ -57,6 +64,27 @@ function ScanList() {
       <img src={skeletonImage} alt="skeleton" className="skeleton-figure" />
     </div>
   );
+
+  const handleImageError = (e, scanId) => {
+    console.error(`Failed to load image for scan ${scanId}:`, e.target.src);
+    e.target.style.display = 'none';
+    // Add a placeholder or fallback image
+    const fallbackDiv = document.createElement('div');
+    fallbackDiv.className = 'scan-image-fallback';
+    fallbackDiv.innerHTML = '🦴';
+    fallbackDiv.style.cssText = `
+      width: 150px;
+      height: 150px;
+      background: #f0f0f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    `;
+    e.target.parentNode.insertBefore(fallbackDiv, e.target);
+  };
 
   return (
     <>
@@ -128,31 +156,12 @@ function ScanList() {
               className="card fade-up"
               style={{ width: '180px' }}
             >
-              {/* <img
-              src={
-  scan.image.startsWith('http')
-    ? scan.image
-    : `${process.env.REACT_APP_API_URL}${scan.image}`
-}
-
+              <img
+                src={scan.image}
                 alt="X-ray"
-                width="150"
-              /> */
-//               <img
-//   src={scan.image}
-//   alt="X-ray"
-//   width="150"
-// />
-<img
-  src={scan.image}
-  alt="X-ray"
-  className="scan-image"
-/>
-
-
-
-
-              }
+                className="scan-image"
+                onError={(e) => handleImageError(e, scan.id)}
+              />
               <div style={{ marginTop: '10px' }}>
                 <strong>{scan.body_part}</strong>
                 <p>{scan.diagnosis}</p>

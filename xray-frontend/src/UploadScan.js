@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { config } from './config';
 
 function UploadScan() {
   const [formData, setFormData] = useState({
@@ -13,6 +14,8 @@ function UploadScan() {
     tags: '',
     image: null,
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const navigate = useNavigate();
 
@@ -26,6 +29,9 @@ function UploadScan() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
+    
     const data = new FormData();
 
     for (let key in formData) {
@@ -41,13 +47,15 @@ function UploadScan() {
     }
 
     try {
-      await axios.post(`${process.env.REACT_APP_API_URL}/scans/`, data);
-
+      await axios.post(`${config.API_URL}/scans/`, data);
       alert('Upload successful!');
       navigate('/');
     } catch (error) {
       console.error('❌ Upload failed with errors:', error.response?.data || error.message);
+      setError(error.response?.data || error.message);
       alert('Upload failed. Please check the fields and try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -55,6 +63,18 @@ function UploadScan() {
     <div className="container fade-up" style={{ maxWidth: '600px', margin: '0 auto' }}>
     <h1 className="page-title">Upload New Scan</h1> 
       <form onSubmit={handleSubmit} className="card" style={{ padding: '20px' }}>
+        {error && (
+          <div style={{ 
+            background: '#fed7d7', 
+            color: '#c53030', 
+            padding: '10px', 
+            borderRadius: '4px', 
+            marginBottom: '15px' 
+          }}>
+            Error: {error}
+          </div>
+        )}
+        
         <div style={{ marginBottom: '12px' }}>
           <label>PATIENT ID:</label>
           <input
@@ -64,6 +84,7 @@ function UploadScan() {
             onChange={handleChange}
             placeholder="e.g. 21L6084"
             required
+            disabled={loading}
           />
         </div>
 
@@ -76,6 +97,7 @@ function UploadScan() {
             onChange={handleChange}
             placeholder="e.g. Chest"
             required
+            disabled={loading}
           />
         </div>
 
@@ -87,6 +109,7 @@ function UploadScan() {
             value={formData.scan_date}
             onChange={handleChange}
             required
+            disabled={loading}
           />
         </div>
 
@@ -99,6 +122,7 @@ function UploadScan() {
             onChange={handleChange}
             placeholder="e.g. Mayo Clinic"
             required
+            disabled={loading}
           />
         </div>
 
@@ -111,6 +135,7 @@ function UploadScan() {
             onChange={handleChange}
             placeholder="e.g. Lower lobe opacity"
             required
+            disabled={loading}
           />
         </div>
 
@@ -123,6 +148,7 @@ function UploadScan() {
             onChange={handleChange}
             placeholder="e.g. Pneumonia"
             required
+            disabled={loading}
           />
         </div>
 
@@ -134,15 +160,25 @@ function UploadScan() {
             value={formData.tags}
             onChange={handleChange}
             placeholder="e.g. lung, infection, opacity"
+            disabled={loading}
           />
         </div>
 
         <div style={{ marginBottom: '12px' }}>
           <label>Image File:</label>
-          <input type="file" name="image" onChange={handleChange} required />
+          <input 
+            type="file" 
+            name="image" 
+            onChange={handleChange} 
+            required 
+            disabled={loading}
+            accept="image/*"
+          />
         </div>
 
-        <button type="submit">Upload</button>
+        <button type="submit" disabled={loading}>
+          {loading ? 'Uploading...' : 'Upload'}
+        </button>
       </form>
     </div>
   );
