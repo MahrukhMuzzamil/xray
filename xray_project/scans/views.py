@@ -4,7 +4,9 @@ from .models import XRayScan
 from .serializers import XRayScanSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Q as DjangoQ, Case, When
+import logging
 
+logger = logging.getLogger(__name__)
 
 class XRayScanViewSet(viewsets.ModelViewSet):
     queryset = XRayScan.objects.all().order_by('-scan_date')
@@ -17,12 +19,33 @@ class XRayScanViewSet(viewsets.ModelViewSet):
         return {'request': self.request}
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        if not serializer.is_valid():
-            print("❌ Upload failed with errors:")
-            print(serializer.errors)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        return super().create(request, *args, **kwargs)
+        try:
+            logger.info(f"📤 Upload request received: {request.data}")
+            
+            # Check if image file is present
+            if 'image' not in request.FILES:
+                return Response(
+                    {'image': ['Image file is required.']}, 
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            serializer = self.get_serializer(data=request.data)
+            if not serializer.is_valid():
+                logger.error(f"❌ Upload validation failed: {serializer.errors}")
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Save the instance
+            instance = serializer.save()
+            logger.info(f"✅ Upload successful for scan ID: {instance.id}")
+            
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            
+        except Exception as e:
+            logger.error(f"❌ Upload failed with exception: {str(e)}")
+            return Response(
+                {'error': 'Upload failed. Please try again.'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     def get_queryset(self):
         base_queryset = super().get_queryset()
@@ -50,7 +73,7 @@ class XRayScanViewSet(viewsets.ModelViewSet):
                 return base_queryset.filter(id__in=ids).order_by(preserved_order)
 
         except Exception as e:
-            print(f"⚠️ Elasticsearch search failed: {e}")
+            logger.warning(f"⚠️ Elasticsearch search failed: {e}")
 
         # fallback to DB query
         return base_queryset.filter(

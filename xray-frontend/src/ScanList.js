@@ -58,6 +58,12 @@ function ScanList() {
     </div>
   );
 
+  const handleImageError = (e) => {
+    console.error("❌ Failed to load image:", e.target.src);
+    e.target.style.display = 'none';
+    e.target.nextSibling.style.display = 'block';
+  };
+
   return (
     <>
       <SkeletonImage />
@@ -128,31 +134,61 @@ function ScanList() {
               className="card fade-up"
               style={{ width: '180px' }}
             >
-              {/* <img
-              src={
-  scan.image.startsWith('http')
-    ? scan.image
-    : `${process.env.REACT_APP_API_URL}${scan.image}`
-}
-
-                alt="X-ray"
-                width="150"
-              /> */
-//               <img
-//   src={scan.image}
-//   alt="X-ray"
-//   width="150"
-// />
-<img
-  src={scan.image}
-  alt="X-ray"
-  className="scan-image"
-/>
-
-
-
-
-              }
+              <div className="image-wrapper" style={{ position: 'relative' }}>
+                {scan.image ? (
+                  <>
+                    <img
+                      src={scan.image}
+                      alt="X-ray"
+                      className="scan-image"
+                      onError={handleImageError}
+                      style={{
+                        width: '150px',
+                        height: '150px',
+                        objectFit: 'cover',
+                        borderRadius: '6px',
+                        boxShadow: '0 0 10px rgba(0, 188, 212, 0.4)'
+                      }}
+                    />
+                    <div 
+                      className="image-placeholder" 
+                      style={{
+                        display: 'none',
+                        width: '150px',
+                        height: '150px',
+                        backgroundColor: '#f0f0f0',
+                        borderRadius: '6px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#666',
+                        fontSize: '12px',
+                        textAlign: 'center'
+                      }}
+                    >
+                      No Image
+                    </div>
+                  </>
+                ) : (
+                  <div 
+                    className="image-placeholder" 
+                    style={{
+                      width: '150px',
+                      height: '150px',
+                      backgroundColor: '#f0f0f0',
+                      borderRadius: '6px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#666',
+                      fontSize: '12px',
+                      textAlign: 'center'
+                    }}
+                  >
+                    No Image
+                  </div>
+                )}
+              </div>
               <div style={{ marginTop: '10px' }}>
                 <strong>{scan.body_part}</strong>
                 <p>{scan.diagnosis}</p>

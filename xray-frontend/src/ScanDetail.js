@@ -5,6 +5,7 @@ import axios from 'axios';
 function ScanDetail() {
   const { id } = useParams();
   const [scan, setScan] = useState(null);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     axios.get(`https://xray-backend-391z.onrender.com/api/scans/${id}/`)
@@ -16,26 +17,40 @@ function ScanDetail() {
       });
   }, [id]);
 
+  const handleImageError = () => {
+    console.error("❌ Failed to load image:", scan?.image);
+    setImageError(true);
+  };
+
   if (!scan) return <div className="container">Loading...</div>;
 
   return (
     <div className="container fade-up">
       <h1 className="page-title">Scan Detail</h1>
       
-      {scan.image && (
-//         <img
-//   src={scan.image}
-//   alt="Full X-ray"
-//   style={{ maxWidth: '100%', height: 'auto', marginBottom: '20px' }}
-// />
-<img
-  src={scan.image}
-  alt="Full X-ray"
-  className="detail-image"
-/>
+      {scan.image && !imageError && (
+        <div className="image-container">
+          <img
+            src={scan.image}
+            alt="Full X-ray"
+            className="detail-image"
+            onError={handleImageError}
+            style={{
+              maxWidth: '100%',
+              height: 'auto',
+              marginBottom: '20px',
+              borderRadius: '8px',
+              boxShadow: '0 0 15px rgba(0, 188, 212, 0.6)'
+            }}
+          />
+        </div>
+      )}
 
-
-
+      {imageError && (
+        <div className="image-error">
+          <p>⚠️ Image could not be loaded</p>
+          <p>Image URL: {scan.image}</p>
+        </div>
       )}
 
       <div className="card">

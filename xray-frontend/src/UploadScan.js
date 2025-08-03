@@ -13,6 +13,8 @@ function UploadScan() {
     tags: '',
     image: null,
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const navigate = useNavigate();
 
@@ -22,10 +24,51 @@ function UploadScan() {
       ...prev,
       [name]: type === 'file' ? files[0] : value,
     }));
+    setError(''); // Clear error when user makes changes
+  };
+
+  const validateForm = () => {
+    if (!formData.patient_id.trim()) {
+      setError('Patient ID is required');
+      return false;
+    }
+    if (!formData.body_part.trim()) {
+      setError('Body part is required');
+      return false;
+    }
+    if (!formData.scan_date) {
+      setError('Scan date is required');
+      return false;
+    }
+    if (!formData.institution.trim()) {
+      setError('Institution is required');
+      return false;
+    }
+    if (!formData.description.trim()) {
+      setError('Description is required');
+      return false;
+    }
+    if (!formData.diagnosis.trim()) {
+      setError('Diagnosis is required');
+      return false;
+    }
+    if (!formData.image) {
+      setError('Image file is required');
+      return false;
+    }
+    return true;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsLoading(true);
+    setError('');
+
     const data = new FormData();
 
     for (let key in formData) {
@@ -41,13 +84,37 @@ function UploadScan() {
     }
 
     try {
-      await axios.post(`${process.env.REACT_APP_API_URL}/scans/`, data);
+      console.log('🚀 Uploading to:', `${process.env.REACT_APP_API_URL}/scans/`);
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/scans/`, data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
 
+      console.log('✅ Upload successful:', response.data);
       alert('Upload successful!');
       navigate('/');
     } catch (error) {
-      console.error('❌ Upload failed with errors:', error.response?.data || error.message);
-      alert('Upload failed. Please check the fields and try again.');
+      console.error('❌ Upload failed:', error);
+      console.error('❌ Response data:', error.response?.data);
+      console.error('❌ Response status:', error.response?.status);
+      
+      let errorMessage = 'Upload failed. Please check the fields and try again.';
+      
+      if (error.response?.data) {
+        if (typeof error.response.data === 'object') {
+          const errors = Object.entries(error.response.data)
+            .map(([field, messages]) => `${field}: ${Array.isArray(messages) ? messages.join(', ') : messages}`)
+            .join('\n');
+          errorMessage = `Upload failed:\n${errors}`;
+        } else {
+          errorMessage = error.response.data;
+        }
+      }
+      
+      setError(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -55,6 +122,19 @@ function UploadScan() {
     <div className="container fade-up" style={{ maxWidth: '600px', margin: '0 auto' }}>
     <h1 className="page-title">Upload New Scan</h1> 
       <form onSubmit={handleSubmit} className="card" style={{ padding: '20px' }}>
+        {error && (
+          <div style={{ 
+            backgroundColor: '#ffebee', 
+            color: '#c62828', 
+            padding: '10px', 
+            borderRadius: '4px', 
+            marginBottom: '15px',
+            border: '1px solid #ef5350'
+          }}>
+            {error}
+          </div>
+        )}
+
         <div style={{ marginBottom: '12px' }}>
           <label>PATIENT ID:</label>
           <input
@@ -64,6 +144,7 @@ function UploadScan() {
             onChange={handleChange}
             placeholder="e.g. 21L6084"
             required
+            disabled={isLoading}
           />
         </div>
 
@@ -76,6 +157,7 @@ function UploadScan() {
             onChange={handleChange}
             placeholder="e.g. Chest"
             required
+            disabled={isLoading}
           />
         </div>
 
@@ -87,6 +169,7 @@ function UploadScan() {
             value={formData.scan_date}
             onChange={handleChange}
             required
+            disabled={isLoading}
           />
         </div>
 
@@ -99,6 +182,7 @@ function UploadScan() {
             onChange={handleChange}
             placeholder="e.g. Mayo Clinic"
             required
+            disabled={isLoading}
           />
         </div>
 
@@ -111,6 +195,7 @@ function UploadScan() {
             onChange={handleChange}
             placeholder="e.g. Lower lobe opacity"
             required
+            disabled={isLoading}
           />
         </div>
 
@@ -123,6 +208,7 @@ function UploadScan() {
             onChange={handleChange}
             placeholder="e.g. Pneumonia"
             required
+            disabled={isLoading}
           />
         </div>
 
@@ -134,18 +220,33 @@ function UploadScan() {
             value={formData.tags}
             onChange={handleChange}
             placeholder="e.g. lung, infection, opacity"
+            disabled={isLoading}
           />
         </div>
 
         <div style={{ marginBottom: '12px' }}>
           <label>Image File:</label>
-          <input type="file" name="image" onChange={handleChange} required />
+          <input 
+            type="file" 
+            name="image" 
+            onChange={handleChange} 
+            required 
+            disabled={isLoading}
+            accept="image/*"
+          />
+          {formData.image && (
+            <p style={{ fontSize: '12px', color: '#666', marginTop: '5px' }}>
+              Selected: {formData.image.name}
+            </p>
+          )}
         </div>
 
-        <button type="submit">Upload</button>
+        <button type="submit" disabled={isLoading}>
+          {isLoading ? 'Uploading...' : 'Upload'}
+        </button>
       </form>
     </div>
   );
 }
 
-export default UploadScan;
+export default UploadScan
