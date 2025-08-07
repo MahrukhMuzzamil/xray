@@ -52,6 +52,7 @@ function ScanDetail() {
               Loading image...
             </div>
           )}
+          <div className="image-container" style={{ textAlign: 'center', maxWidth: '1000px', margin: '0 auto' }}>
           <img
             src={scan.image}
             alt="Full X-ray"
@@ -67,6 +68,7 @@ function ScanDetail() {
               display: imageLoading ? 'none' : 'block'
             }}
           />
+        </div>
         </div>
       )}
 
