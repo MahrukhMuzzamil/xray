@@ -21,13 +21,13 @@ class XRayScanViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         try:
-            logger.info(f"📤 Upload request received")
+            logger.info(f" Upload request received")
             logger.info(f"   Files: {list(request.FILES.keys()) if request.FILES else 'No files'}")
             logger.info(f"   Data keys: {list(request.data.keys()) if request.data else 'No data'}")
             
             # Check if image file is present
             if 'image' not in request.FILES:
-                logger.error("❌ No image file in request")
+                logger.error(" No image file in request")
                 return Response(
                     {'image': ['Image file is required.']}, 
                     status=status.HTTP_400_BAD_REQUEST

@@ -9,7 +9,7 @@ class XRayScan(models.Model):
     institution = models.CharField(max_length=255)
     description = models.TextField()
     diagnosis = models.CharField(max_length=255)
-    tags = models.JSONField(default=list)  # Store as list of strings
+    tags = models.JSONField(default=list)  
 
     def __str__(self):
         return f"{self.patient_id} - {self.body_part}"

@@ -1,5 +1,3 @@
-# scans/seed.py
-
 from .models import XRayScan
 import os
 from faker import Faker
@@ -9,7 +7,7 @@ import datetime
 import cloudinary
 import os
 
-# ✅ Explicitly configure Cloudinary (this is what was missing!)
+
 cloudinary.config(
     cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
     api_key=os.getenv('CLOUDINARY_API_KEY'),
@@ -23,21 +21,21 @@ def run():
     sample_images_dir = 'sample_xray_images'
     
     if not os.path.exists(sample_images_dir):
-        print(f"❌ Please create '{sample_images_dir}' directory in your project root and add X-ray images")
+        print(f" Please create '{sample_images_dir}' directory in your project root and add X-ray images")
         return
     
     image_files = [f for f in os.listdir(sample_images_dir) 
                    if f.lower().endswith(('.png', '.jpg', '.jpeg', '.webp'))]
     
     if not image_files:
-        print(f"❌ No image files found in '{sample_images_dir}' directory")
+        print(f" No image files found in '{sample_images_dir}' directory")
         return
 
-    print(f"📁 Found {len(image_files)} images: {image_files}")
+    print(f" Found {len(image_files)} images: {image_files}")
 
-    # Delete existing scans
+
     XRayScan.objects.all().delete()
-    print("🗑️ Cleared existing scan data")
+    print(" Cleared existing scan data")
 
     for i in range(min(len(image_files) * 2, 15)):
         selected_image = random.choice(image_files)
@@ -90,10 +88,10 @@ def run():
                 image=cloudinary_url
             )
             scan.save()
-            print(f"✅ Created scan {i+1}: {scan.patient_id} - {selected_body_part} - {selected_diagnosis}")
+            print(f" Created scan {i+1}: {scan.patient_id} - {selected_body_part} - {selected_diagnosis}")
         
         except Exception as e:
-            print(f"❌ Error creating scan {i+1}: {e}")
+            print(f" Error creating scan {i+1}: {e}")
             continue
 
-    print(f"\n🎉 Successfully created {XRayScan.objects.count()} X-ray scans with Cloudinary images!")
+    print(f"\n Successfully created {XRayScan.objects.count()} X-ray scans with Cloudinary images!")

@@ -125,8 +125,9 @@ CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "https://xray-frontend-zbmg.onrender.com",
+    "https://xray-frontend-zbmg.onrender.com/",
     "https://xray-frontend.onrender.com",
+    
 ]
 CORS_ALLOWED_ORIGIN_REGEXES = [
     r"^https://.*\.onrender\.com$",
