@@ -13,7 +13,7 @@ function ScanDetail() {
     const apiUrl = process.env.REACT_APP_API_URL || 'https://xray-backend-391z.onrender.com/api';
     axios.get(`${apiUrl}/scans/${id}/`)
       .then((res) => {
-        console.log('📊 Scan data received:', res.data);
+        console.log(' Scan data received:', res.data);
         setScan(res.data);
         setImageLoading(true);
         setImageError(false);

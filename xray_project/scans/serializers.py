@@ -1,17 +1,32 @@
 from rest_framework import serializers
 from .models import XRayScan
 import json
-import re
+import cloudinary.utils
 
 class XRayScanSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()
+    
     class Meta:
         model = XRayScan
         fields = '__all__'
 
+    def get_image_url(self, obj):
+        """Get the proper Cloudinary URL"""
+        if obj.image:
+            try:
+                # Use Cloudinary's built-in URL generation
+                url = cloudinary.utils.cloudinary_url(str(obj.image))[0]
+                print(f"🔗 Generated Cloudinary URL for {obj.patient_id}: {url}")
+                return url
+            except Exception as e:
+                print(f"❌ Error generating Cloudinary URL for {obj.patient_id}: {e}")
+                return str(obj.image)
+        return None
+
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         
-        
+        # Handle tags field
         if isinstance(representation.get('tags'), str):
             try:
                 representation['tags'] = json.loads(representation['tags'])
@@ -20,22 +35,8 @@ class XRayScanSerializer(serializers.ModelSerializer):
         elif representation.get('tags') is None:
             representation['tags'] = []
         
-        
-        if representation.get('image'):
-            image_url = str(representation['image'])
-            
-            
-            if 'image/upload/https://' in image_url:
-                image_url = image_url.replace('image/upload/https://', 'https://')
-            elif 'image/upload/http://' in image_url:
-                image_url = image_url.replace('image/upload/http://', 'http://')
-            
-            
-            if image_url.startswith('http'):
-                representation['image'] = image_url
-            else:
-                
-                representation['image'] = image_url
+        # Use the proper image URL
+        representation['image'] = self.get_image_url(instance)
         
         return representation
 
@@ -61,12 +62,12 @@ class XRayScanSerializer(serializers.ModelSerializer):
         Validate that the image file is provided and is an image.
         """
         if value:
-            
+            # Check content type if available
             if hasattr(value, 'content_type'):
                 if not value.content_type.startswith('image/'):
                     raise serializers.ValidationError("File must be an image.")
             
-            
+            # Check file size if available
             if hasattr(value, 'size') and value.size > 10 * 1024 * 1024:
                 raise serializers.ValidationError("Image file size must be less than 10MB.")
         
