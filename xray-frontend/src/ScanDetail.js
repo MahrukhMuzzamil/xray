@@ -59,7 +59,7 @@ function ScanDetail() {
             onLoad={handleImageLoad}
             onError={handleImageError}
             style={{
-              maxWidth: '100%',
+              maxWidth: '800px',
               height: 'auto',
               marginBottom: '20px',
               borderRadius: '8px',
