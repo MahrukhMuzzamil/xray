@@ -1,5 +1,6 @@
 from rest_framework import viewsets, filters, status
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
 from .models import XRayScan
 from .serializers import XRayScanSerializer
 from django_filters.rest_framework import DjangoFilterBackend
@@ -8,6 +9,11 @@ import logging
 import traceback
 
 logger = logging.getLogger(__name__)
+
+class LargeResultsSetPagination(PageNumberPagination):
+    page_size = 1000
+    page_size_query_param = 'page_size'
+    max_page_size = 10000
 
 class XRayScanViewSet(viewsets.ModelViewSet):
     queryset = XRayScan.objects.all().order_by('-scan_date')
@@ -51,7 +57,10 @@ class XRayScanViewSet(viewsets.ModelViewSet):
             logger.info(f"✅ Upload successful for scan ID: {instance.id}")
             logger.info(f"   Image URL: {instance.image}")
             
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            response_data = serializer.data
+            logger.info(f"✅ Returning response: {response_data}")
+            
+            return Response(response_data, status=status.HTTP_201_CREATED)            
             
         except Exception as e:
             logger.error(f"❌ Upload failed with exception: {str(e)}")
