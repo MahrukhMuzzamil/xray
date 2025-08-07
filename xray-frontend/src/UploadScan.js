@@ -97,7 +97,8 @@ function UploadScan() {
 
       console.log('✅ Upload successful:', response.data);
       alert('Upload successful!');
-      navigate('/');
+    //  navigate('/');
+      window.location.href='/';
     } catch (error) {
       console.error('❌ Upload failed:', error);
       console.error('❌ Response data:', error.response?.data);
