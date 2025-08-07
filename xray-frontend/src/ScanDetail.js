@@ -9,7 +9,9 @@ function ScanDetail() {
   const [imageLoading, setImageLoading] = useState(true);
 
   useEffect(() => {
-    axios.get(`https://xray-backend-391z.onrender.com/api/scans/${id}/`)
+    //axios.get(`https://xray-backend-391z.onrender.com/api/scans/${id}/`)
+    const apiUrl = process.env.REACT_APP_API_URL || 'https://xray-backend-391z.onrender.com/api';
+    axios.get(`${apiUrl}/scans/${id}/`)
       .then((res) => {
         console.log('📊 Scan data received:', res.data);
         setScan(res.data);
