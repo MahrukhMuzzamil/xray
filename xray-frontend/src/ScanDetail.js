@@ -19,18 +19,18 @@ function ScanDetail() {
         setImageError(false);
       })
       .catch((err) => {
-        console.error("❌ Failed to fetch scan detail:", err);
+        console.error(" Failed to fetch scan detail:", err);
       });
   }, [id]);
 
   const handleImageLoad = () => {
-    console.log('✅ Image loaded successfully');
+    console.log(' Image loaded successfully');
     setImageLoading(false);
     setImageError(false);
   };
 
   const handleImageError = (e) => {
-    console.error("❌ Failed to load image:", e.target.src);
+    console.error(" Failed to load image:", e.target.src);
     setImageError(true);
     setImageLoading(false);
   };
@@ -59,7 +59,7 @@ function ScanDetail() {
             onLoad={handleImageLoad}
             onError={handleImageError}
             style={{
-              maxWidth: '800px',
+              maxWidth: '1000px',
               height: 'auto',
               marginBottom: '20px',
               borderRadius: '8px',
@@ -72,7 +72,7 @@ function ScanDetail() {
 
       {imageError && (
         <div className="image-error">
-          <p>⚠️ Image could not be loaded</p>
+          <p> Image could not be loaded</p>
           <p>Image URL: {scan.image}</p>
           <p>Please check if the URL is accessible in your browser.</p>
           <button 
